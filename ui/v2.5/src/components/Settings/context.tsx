@@ -67,7 +67,9 @@ const emptyState: ISettingsContextState = {
   dlna: {},
   ui: {},
   plugins: {},
-  jasna: {},
+  jasna: {
+  presets: [],
+},
 
   advancedMode: false,
 
@@ -147,7 +149,9 @@ export const SettingsContext: React.FC = ({ children }) => {
   const [pendingPlugins, setPendingPlugins] = useState<PluginConfigs>();
   const [updatePluginConfig] = useConfigurePlugin();
 
-  const [jasna, setJasna] = useState<GQL.ConfigJasnaInput>({});
+  const [jasna, setJasna] = useState<GQL.ConfigJasnaInput>({
+  presets: [],
+});
   const [pendingJasna, setPendingJasna] = useState<GQL.ConfigJasnaInput>();
   const [updateJasnaConfig] = useConfigureJasna();
 
@@ -173,7 +177,17 @@ export const SettingsContext: React.FC = ({ children }) => {
     setDLNA({ ...withoutTypename(data.configuration.dlna) });
     setUI(data.configuration.ui);
     setPlugins(data.configuration.plugins);
-    setJasna(data.configuration.jasna ? { ...withoutTypename(data.configuration.jasna) } : {});
+    setJasna(
+  data.configuration.jasna
+    ? {
+        presets: data.configuration.jasna.presets.map((p) => ({
+          ...withoutTypename(p),
+        })),
+      }
+    : {
+        presets: [],
+      }
+);
   }, [data, error]);
 
   const resetSuccess = useDebounce(() => setUpdateSuccess(undefined), 4000);
@@ -570,21 +584,18 @@ export const SettingsContext: React.FC = ({ children }) => {
   }, [pendingJasna, saveJasnaConfig]);
 
   function saveJasna(input: Partial<GQL.ConfigJasnaInput>) {
-    setJasna({
-      ...jasna,
-      ...input,
-    });
+  setJasna((current) => ({
+    ...current,
+    ...input,
+    presets: input.presets ?? current.presets,
+  }));
 
-    setPendingJasna((current) => {
-      if (!current) {
-        return input;
-      }
-      return {
-        ...current,
-        ...input,
-      };
-    });
-  }
+  setPendingJasna((current) => ({
+    ...current,
+    ...input,
+    presets: input.presets ?? current?.presets ?? jasna.presets,
+  }));
+}
 
   function maybeRenderLoadingIndicator() {
     if (updateSuccess === false) {
