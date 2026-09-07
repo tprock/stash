@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - develop-fork
       - master
       - 'releases/**'
   pull_request:
