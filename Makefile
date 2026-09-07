@@ -377,7 +377,7 @@ ui: ui-only generate-login-locale
 
 .PHONY: ui-only
 ui-only: ui-env
-	cd ui/v2.5 && npm.cmd run build
+	cd ui/v2.5 && npm run build
 
 .PHONY: zip-ui
 zip-ui:
@@ -390,12 +390,12 @@ ui-start: ui-env
 
 .PHONY: fmt-ui
 fmt-ui:
-	cd ui/v2.5 && npm.cmd run format
+	cd ui/v2.5 && npm run format
 
 # runs all of the frontend PR-acceptance steps
 .PHONY: validate-ui
 validate-ui:
-	cd ui/v2.5 && npm.cmd run validate
+	cd ui/v2.5 && npm run validate
 
 # these targets run the same steps as fmt-ui and validate-ui, but only on files that have changed
 fmt-ui-quick:
