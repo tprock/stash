@@ -63,7 +63,7 @@ jobs:
     - name: Validate UI
       # skip UI validation for pull requests if UI is unchanged
       if: ${{ github.event_name != 'pull_request' || steps.cache-ui.outputs.cache-hit != 'true' }}
-      run: make validate-ui
+      run: cd ui/v2.5 && npm run lint && npm run check
 
     - name: Build UI
       # skip UI build for pull requests if UI is unchanged (UI was cached)
