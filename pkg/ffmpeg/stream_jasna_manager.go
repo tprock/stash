@@ -248,7 +248,11 @@ func (m *jasnaStreamManager) callStop() {
 }
 
 func (m *jasnaStreamManager) StreamURL() string {
-	return jasnaBaseURL + "/stream.m3u8"
+    if publicURL := os.Getenv("JASNA_PUBLIC_URL"); publicURL != "" {
+        return strings.TrimRight(publicURL, "/") + "/stream.m3u8"
+    }
+
+    return jasnaBaseURL + "/stream.m3u8"
 }
 
 func (m *jasnaStreamManager) touchActivity() {
